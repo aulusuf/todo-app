@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-
+import moment from "moment";
 import axios from "axios";
 
 function App() {
   const [todoList, setTodoList] = useState([]);
+  const [newTodoT, setNewTodoT] = useState();
+  const [newTodoD, setNewTodoD] = useState();
 
   useEffect(() => {
     fetchData();
@@ -18,6 +20,21 @@ function App() {
       .catch((error) => {
         console.log(error);
       });
+  };
+  const createTodo = async (event) => {
+    event.preventDefault();
+    const now = new Date();
+    const dateString = moment(now).format("YYYY-MM-DD HH:mm");
+    const temp = [];
+    let data = {
+      id: todoList.length + 1,
+      title: newTodoT,
+      description: newTodoD,
+      status: 0,
+      createdAt: dateString,
+    };
+    temp.push(...todoList, data); // seems like api. duplicate first
+    setTodoList(temp);
   };
 
   return (
@@ -73,13 +90,32 @@ function App() {
       </div>
       <div className="container">
         <h1 className="text-center mt-3">To Do App</h1>
-        <div className="flex justify-content-center">
-          <input placeholder="new todo" className="col-3" />
-          <button type="button" className="btn btn-primary mx-2">
-            Add New
-          </button>
+        <div className="text-center">
+          <p>New To Do</p>
+          <div className="mb-3">
+            <input
+              placeholder="Tittle"
+              className="col-3 mb-3 p-1"
+              onChange={(event) => setNewTodoT(event.target.value)}
+            />
+            <div className="mb-3">
+              <input
+                placeholder="Description"
+                className="col-3 p-1"
+                onChange={(event) => setNewTodoD(event.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={(event) => createTodo(event)}
+              >
+                Add New
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="text-center"></div>
         <div class="flex">
           <div>
             <table class="table">
