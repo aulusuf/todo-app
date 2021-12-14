@@ -42,11 +42,62 @@ function App() {
     setTodoList(temp);
   };
 
+  const editTodo = (e) => {
+    e.preventDefault();
+    console.log(selectedTodo);
+    const temp = todoList.map((data) =>
+      data.id === selectedTodo.id
+        ? {
+            ...data,
+            title: selectedTodo.title,
+            description: selectedTodo.description,
+            status: 0,
+          }
+        : data
+    );
+    setTodoList(temp);
+    // console.log(temp);
+  };
+
+  const deleteTodo = (e) => {
+    let temp = [];
+    e.preventDefault();
+    let todoIndex = todoList.findIndex((data) => data.id === selectedTodo.id);
+    console.log(todoIndex);
+    todoList.splice(todoIndex, 1);
+    temp.push(...todoList);
+    setTodoList(temp);
+  };
+
+  const doneTodo = (e) => {
+    e.preventDefault();
+    console.log(selectedTodo);
+    const temp = todoList.map((data) =>
+      data.id === selectedTodo.id
+        ? {
+            ...data,
+            status: 1,
+          }
+        : data
+    );
+    setTodoList(temp);
+  };
+
   return (
     <>
-      <ViewDetailModal data={selectedTodo} setData={setSelectedTodo} />
-      <ConfirmationModal />
-      <EditModal data={selectedTodo} setData={setSelectedTodo} />
+      <ViewDetailModal
+        data={selectedTodo}
+        setData={setSelectedTodo}
+        done={(e) => doneTodo(e)}
+        edit={(e) => editTodo(e)}
+        delete={(e) => deleteTodo(e)}
+      />
+      <ConfirmationModal delete={(e) => deleteTodo(e)} />
+      <EditModal
+        data={selectedTodo}
+        setData={setSelectedTodo}
+        edit={(e) => editTodo(e)}
+      />
       <div className="container">
         <h1 className="text-center mt-3">To Do App</h1>
         <div className="text-center">
