@@ -4,48 +4,20 @@ import axios from "axios";
 
 function App() {
   const [todoList, setTodoList] = useState([]);
-  const [newTodo, setNewTodo] = useState([]);
-  const [selectedTodo, setSelectedTodo] = useState([]);
-  const [todoTittle, setTodoTittle] = useState([]);
-  const [editTodo, setEditTodo] = useState();
-
-  // const [todo0, setTodo0] = useState([]);
 
   useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
     axios
-      .get("https://virtserver.swaggerhub.com/hanabyan/todo/1.0.0/to-do-list", {
-        mode: "cors",
-      })
+      .get("https://virtserver.swaggerhub.com/hanabyan/todo/1.0.0/to-do-list")
       .then((res) => {
         setTodoList(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
       });
-  });
-  var todo0 = todoList.filter((todo) => {
-    return todo.status === 0;
-  });
-
-  var todo1 = todoList.filter((todo) => {
-    return todo.status !== 0;
-  });
-
-  const createTodo = async () => {};
-
-  const handleLihat = (props) => {
-    setSelectedTodo(props);
-    console.log(props);
-  };
-
-  function
-  const handleEdit = () => {
-    const found = todoList.find(() => selectedTodo.id === todoList.id);
-    console.log(found);
-    // setTodoList(
-    //   todoList.map((list) =>
-    //     list.id === item.id ? { ...list, title: editTodo } : list
-    //   )
-    // );
-    // let newValue = { ...todoList, title: editTodo };
-    // setTodoList(newValue);
   };
 
   return (
@@ -76,13 +48,7 @@ function App() {
                   <label for="todoTittle" class="form-label">
                     Tittle
                   </label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="todoTittle"
-                    defaultValue={todoTittle}
-                    onChange={(event) => setEditTodo(event.target.value)}
-                  />
+                  <input type="text" class="form-control" id="todoTittle" />
                 </div>
               </form>
             </div>
@@ -94,12 +60,10 @@ function App() {
               >
                 Delete
               </button>
-
               <button
                 type="button"
                 class="btn btn-primary"
                 data-bs-dismiss="modal"
-                onClick={() => handleEdit()}
               >
                 Change
               </button>
@@ -111,11 +75,7 @@ function App() {
         <h1 className="text-center mt-3">To Do App</h1>
         <div className="flex justify-content-center">
           <input placeholder="new todo" className="col-3" />
-          <button
-            type="button"
-            className="btn btn-primary mx-2"
-            onClick={(event) => setNewTodo(event.target.value)}
-          >
+          <button type="button" className="btn btn-primary mx-2">
             Add New
           </button>
         </div>
@@ -135,32 +95,7 @@ function App() {
                   <th scope="col">Action</th>
                 </tr>
               </thead>
-              <tbody>
-                {todo0.map((list) => {
-                  return (
-                    <tr key={list.id}>
-                      <th scope="row">{list.id}</th>
-                      <td>{list.title}</td>
-                      <td>{list.status === 0 ? "Not Done" : null}</td>
-                      <td>
-                        <div>
-                          <button
-                            className="btn btn-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#viewTodo"
-                            onClick={() => handleLihat(list)}
-                          >
-                            View
-                          </button>
-                          <button className="btn btn-danger mx-2">
-                            Delete
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
+              <tbody>{/* Table data with status 0 */}</tbody>
             </table>
           </div>
           <div>
@@ -177,23 +112,7 @@ function App() {
                   <th scope="col">Action</th>
                 </tr>
               </thead>
-              <tbody>
-                {todo1.map((list) => {
-                  return (
-                    <tr key={list.id}>
-                      <th scope="row">{list.id}</th>
-                      <td>{list.title}</td>
-                      <td>{list.status === 1 ? "Done" : null}</td>
-                      <td>
-                        <div>
-                          <button className="btn btn-primary">View</button>
-                          <button className="btn btn-warning mx-2">Edit</button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
+              <tbody>{/* Table Data with status 1 */}</tbody>
             </table>
           </div>
         </div>
