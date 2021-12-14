@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import axios from "axios";
+import { TableData0, TableData1 } from "./components/TableData";
 
 function App() {
   const [todoList, setTodoList] = useState([]);
   const [newTodoT, setNewTodoT] = useState();
   const [newTodoD, setNewTodoD] = useState();
+  const [selectedTodo, setSelectedTodo] = useState({});
 
   useEffect(() => {
     fetchData();
@@ -118,37 +120,37 @@ function App() {
         </div>
         <div class="flex">
           <div>
-            <table class="table">
+            <table className="table">
               <thead>
                 <tr>
                   <th scope="col" className="col-2">
                     #
                   </th>
                   <th scope="col" className="col-5">
-                    Tittle
+                    Title
                   </th>
                   <th scope="col">Status</th>
                   <th scope="col">Action</th>
                 </tr>
               </thead>
-              <tbody>{/* Table data with status 0 */}</tbody>
+              <TableData0 data={todoList} setData={setSelectedTodo} />
             </table>
           </div>
           <div>
-            <table class="table">
+            <table className="table">
               <thead>
                 <tr>
                   <th scope="col" className="col-2">
                     #
                   </th>
                   <th scope="col" className="col-5">
-                    Tittle
+                    Title
                   </th>
                   <th scope="col">Status</th>
                   <th scope="col">Action</th>
                 </tr>
               </thead>
-              <tbody>{/* Table Data with status 1 */}</tbody>
+              <TableData1 data={todoList} setData={setSelectedTodo} />
             </table>
           </div>
         </div>
