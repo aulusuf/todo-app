@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import axios from "axios";
-import ViewM from "./components/modals/ViewM";
-import ConfirmationM from "./components/modals/ConfirmationM";
-import EditM from "./components/modals/EditM";
+import ViewDetailModal from "./components/modals/ViewDetailModal";
+import ConfirmationModal from "./components/modals/ConfirmationModal";
+import EditModal from "./components/modals/EditModal";
 import { TableData0, TableData1 } from "./components/TableData";
 
 function App() {
@@ -41,12 +41,60 @@ function App() {
     temp.push(...todoList, data); // seems like api. duplicate first
     setTodoList(temp);
   };
+  const editTodo = (e) => {
+    e.preventDefault();
+    console.log(selectedTodo);
+    const temp = todoList.map((data) =>
+      data.id === selectedTodo.id
+        ? {
+            ...data,
+            title: selectedTodo.title,
+            description: selectedTodo.description,
+            status: 0,
+          }
+        : data
+    );
+    setTodoList(temp);
+    // console.log(temp);
+  };
 
+  const deleteTodo = (e) => {
+    let temp = [];
+    e.preventDefault();
+    let todoIndex = todoList.findIndex((data) => data.id === selectedTodo.id);
+    console.log(todoIndex);
+    todoList.splice(todoIndex, 1);
+    temp.push(...todoList);
+    setTodoList(temp);
+  };
+
+  const doneTodo = (e) => {
+    e.preventDefault();
+    console.log(selectedTodo);
+    const temp = todoList.map((data) =>
+      data.id === selectedTodo.id
+        ? {
+            ...data,
+            status: 1,
+          }
+        : data
+    );
+    setTodoList(temp);
+  };
   return (
     <>
-      <ViewM data={selectedTodo} setData={setSelectedTodo} />
-      <ConfirmationM />
-      <EditM data={selectedTodo} setData={setSelectedTodo} />
+      <ViewDetailModal
+        data={selectedTodo}
+        setData={setSelectedTodo}
+        done={(e) => doneTodo(e)}
+        edit={(e) => editTodo(e)}
+        delete={(e) => deleteTodo(e)}
+      />
+
+      <ConfirmationModal delete={(e) => deleteTodo(e)} />
+
+      <EditModal data={selectedTodo} setData={setSelectedTodo} />
+
       <div className="container">
         <h1 className="text-center mt-3">To Do App</h1>
         <div className="text-center">
