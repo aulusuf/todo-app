@@ -23,3 +23,5 @@ After you done the activity, you can set your To Do in the table with status `do
 You can edit your To Do, even after you set your To Do status as `done`. But if you edit your done To Do, your To Do status will become `not done`
 
 ## Vercel Deployment:
+
+https://todo-app-with-majoo.vercel.app/
