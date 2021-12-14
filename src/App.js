@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import axios from "axios";
+import ViewM from "./components/modals/ViewM";
+import ConfirmationM from "./components/modals/ConfirmationM";
+import EditM from "./components/modals/EditM";
 import { TableData0, TableData1 } from "./components/TableData";
 
 function App() {
@@ -41,55 +44,9 @@ function App() {
 
   return (
     <>
-      <div
-        class="modal fade"
-        id="viewTodo"
-        tabindex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title text-blue" id="">
-                View To Do
-              </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <form>
-                <div class="mb-3">
-                  <label for="todoTittle" class="form-label">
-                    Tittle
-                  </label>
-                  <input type="text" class="form-control" id="todoTittle" />
-                </div>
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-danger"
-                data-bs-dismiss="modal"
-              >
-                Delete
-              </button>
-              <button
-                type="button"
-                class="btn btn-primary"
-                data-bs-dismiss="modal"
-              >
-                Change
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <ViewM data={selectedTodo} setData={setSelectedTodo} />
+      <ConfirmationM />
+      <EditM data={selectedTodo} setData={setSelectedTodo} />
       <div className="container">
         <h1 className="text-center mt-3">To Do App</h1>
         <div className="text-center">
