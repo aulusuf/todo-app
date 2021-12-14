@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import axios from "axios";
-import ViewM from "./components/modals/ViewM";
-import ConfirmationM from "./components/modals/ConfirmationM";
-import EditM from "./components/modals/EditM";
-import { TableData0, TableData1 } from "./components/TableData";
+import ViewDetailModal from "./Components/Modals/ViewDetailModal";
+import ConfirmationModal from "./Components/Modals/ConfirmationModal";
+import EditModal from "./Components/Modals/EditModal";
+import { TableData0, TableData1 } from "./Components/TableData";
 
 function App() {
   const [todoList, setTodoList] = useState([]);
@@ -44,9 +44,9 @@ function App() {
 
   return (
     <>
-      <ViewM data={selectedTodo} setData={setSelectedTodo} />
-      <ConfirmationM />
-      <EditM data={selectedTodo} setData={setSelectedTodo} />
+      <ViewDetailModal data={selectedTodo} setData={setSelectedTodo} />
+      <ConfirmationModal />
+      <EditModal data={selectedTodo} setData={setSelectedTodo} />
       <div className="container">
         <h1 className="text-center mt-3">To Do App</h1>
         <div className="text-center">
