@@ -1,199 +1,170 @@
 import React, { useState, useEffect } from "react";
-
+import moment from "moment";
 import axios from "axios";
+import ViewM from "./components/modals/ViewM";
+import ConfirmationM from "./components/modals/ConfirmationM";
+import EditM from "./components/modals/EditM";
+import { TableData0, TableData1 } from "./components/TableData";
 
 function App() {
   const [todoList, setTodoList] = useState([]);
-  const [newTodo, setNewTodo] = useState([]);
-  const [selectedTodo, setSelectedTodo] = useState([]);
-  const [todoTittle, setTodoTittle] = useState([]);
-  const [editTodo, setEditTodo] = useState();
+  const [newTodoT, setNewTodoT] = useState();
+  const [newTodoD, setNewTodoD] = useState();
+  const [selectedTodo, setSelectedTodo] = useState({});
 
-  // const [todo0, setTodo0] = useState([]);
-
+  // best practice for SDLC
   useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
     axios
-      .get("https://virtserver.swaggerhub.com/hanabyan/todo/1.0.0/to-do-list", {
-        mode: "cors",
-      })
+      .get("https://virtserver.swaggerhub.com/hanabyan/todo/1.0.0/to-do-list")
       .then((res) => {
         setTodoList(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
       });
-  });
-  var todo0 = todoList.filter((todo) => {
-    return todo.status === 0;
-  });
-
-  var todo1 = todoList.filter((todo) => {
-    return todo.status !== 0;
-  });
-
-  const createTodo = async () => {};
-
-  const handleLihat = (props) => {
-    setSelectedTodo(props);
-    console.log(props);
   };
 
-  function
-  const handleEdit = () => {
-    const found = todoList.find(() => selectedTodo.id === todoList.id);
-    console.log(found);
-    // setTodoList(
-    //   todoList.map((list) =>
-    //     list.id === item.id ? { ...list, title: editTodo } : list
-    //   )
-    // );
-    // let newValue = { ...todoList, title: editTodo };
-    // setTodoList(newValue);
+  const createTodo = async (event) => {
+    event.preventDefault();
+    const now = new Date();
+    const dateString = moment(now).format("YYYY-MM-DD HH:mm");
+    const temp = [];
+    let data = {
+      id: todoList.length + 1,
+      title: newTodoT,
+      description: newTodoD,
+      status: 0,
+      createdAt: dateString,
+    };
+    temp.push(...todoList, data); // seems like api. duplicate first
+    setTodoList(temp);
+  };
+
+  const editTodo = (e) => {
+    e.preventDefault();
+    console.log(selectedTodo);
+    const temp = todoList.map((data) =>
+      data.id === selectedTodo.id
+        ? {
+            ...data,
+            title: selectedTodo.title,
+            description: selectedTodo.description,
+            status: 0,
+          }
+        : data
+    );
+    setTodoList(temp);
+    // console.log(temp);
+  };
+
+  const deleteTodo = (e) => {
+    let temp = [];
+    e.preventDefault();
+    let todoIndex = todoList.findIndex((data) => data.id === selectedTodo.id);
+    console.log(todoIndex);
+    todoList.splice(todoIndex, 1);
+    temp.push(...todoList);
+    setTodoList(temp);
+  };
+
+  const doneTodo = (e) => {
+    e.preventDefault();
+    console.log(selectedTodo);
+    const temp = todoList.map((data) =>
+      data.id === selectedTodo.id
+        ? {
+            ...data,
+            status: 1,
+          }
+        : data
+    );
+    setTodoList(temp);
   };
 
   return (
     <>
-      <div
-        class="modal fade"
-        id="viewTodo"
-        tabindex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title text-blue" id="">
-                View To Do
-              </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <form>
-                <div class="mb-3">
-                  <label for="todoTittle" class="form-label">
-                    Tittle
-                  </label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="todoTittle"
-                    defaultValue={todoTittle}
-                    onChange={(event) => setEditTodo(event.target.value)}
-                  />
-                </div>
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-danger"
-                data-bs-dismiss="modal"
-              >
-                Delete
-              </button>
+      <ViewM
+        data={selectedTodo}
+        setData={setSelectedTodo}
+        done={(e) => doneTodo(e)}
+        edit={(e) => editTodo(e)}
+        delete={(e) => deleteTodo(e)}
+      />
 
+      <ConfirmationM delete={(e) => deleteTodo(e)} />
+
+      <EditM
+        data={selectedTodo}
+        setData={setSelectedTodo}
+        edit={(e) => editTodo(e)}
+      />
+
+      <div className="container">
+        <h1 className="text-center mt-3 mb-5">To Do App</h1>
+        <div className="text-center">
+          <p>New To Do</p>
+          <div className="mb-3">
+            <input
+              placeholder="Tittle"
+              className="col-3 mb-3 p-1"
+              onChange={(event) => setNewTodoT(event.target.value)}
+            />
+            <div className="mb-3">
+              <input
+                placeholder="Description"
+                className="col-3 p-1"
+                onChange={(event) => setNewTodoD(event.target.value)}
+              />
+            </div>
+            <div className="mb-3">
               <button
                 type="button"
-                class="btn btn-primary"
-                data-bs-dismiss="modal"
-                onClick={() => handleEdit()}
+                className="btn btn-primary"
+                onClick={(event) => createTodo(event)}
               >
-                Change
+                Add New
               </button>
             </div>
           </div>
         </div>
-      </div>
-      <div className="container">
-        <h1 className="text-center mt-3">To Do App</h1>
-        <div className="flex justify-content-center">
-          <input placeholder="new todo" className="col-3" />
-          <button
-            type="button"
-            className="btn btn-primary mx-2"
-            onClick={(event) => setNewTodo(event.target.value)}
-          >
-            Add New
-          </button>
-        </div>
         <div className="text-center"></div>
-        <div class="flex">
+        <div className="flex">
           <div>
-            <table class="table">
+            <table className="table">
               <thead>
                 <tr>
                   <th scope="col" className="col-2">
                     #
                   </th>
                   <th scope="col" className="col-5">
-                    Tittle
+                    Title
                   </th>
                   <th scope="col">Status</th>
                   <th scope="col">Action</th>
                 </tr>
               </thead>
-              <tbody>
-                {todo0.map((list) => {
-                  return (
-                    <tr key={list.id}>
-                      <th scope="row">{list.id}</th>
-                      <td>{list.title}</td>
-                      <td>{list.status === 0 ? "Not Done" : null}</td>
-                      <td>
-                        <div>
-                          <button
-                            className="btn btn-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#viewTodo"
-                            onClick={() => handleLihat(list)}
-                          >
-                            View
-                          </button>
-                          <button className="btn btn-danger mx-2">
-                            Delete
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
+              <TableData0 data={todoList} setData={setSelectedTodo} />
             </table>
           </div>
           <div>
-            <table class="table">
+            <table className="table">
               <thead>
                 <tr>
                   <th scope="col" className="col-2">
                     #
                   </th>
                   <th scope="col" className="col-5">
-                    Tittle
+                    Title
                   </th>
                   <th scope="col">Status</th>
                   <th scope="col">Action</th>
                 </tr>
               </thead>
-              <tbody>
-                {todo1.map((list) => {
-                  return (
-                    <tr key={list.id}>
-                      <th scope="row">{list.id}</th>
-                      <td>{list.title}</td>
-                      <td>{list.status === 1 ? "Done" : null}</td>
-                      <td>
-                        <div>
-                          <button className="btn btn-primary">View</button>
-                          <button className="btn btn-warning mx-2">Edit</button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
+              <TableData1 data={todoList} setData={setSelectedTodo} />
             </table>
           </div>
         </div>
